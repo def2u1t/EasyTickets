@@ -1,0 +1,17 @@
+Index: src/main/java/com/def2u1t/easytickets/HelloApplication.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/def2u1t/easytickets/HelloApplication.java b/src/main/java/com/def2u1t/easytickets/HelloApplication.java
+--- a/src/main/java/com/def2u1t/easytickets/HelloApplication.java	
++++ b/src/main/java/com/def2u1t/easytickets/HelloApplication.java	(date 1763129881101)
+@@ -12,7 +12,7 @@
+     public void start(Stage stage) throws IOException {
+         FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("hello-view.fxml"));
+         Scene scene = new Scene(fxmlLoader.load(), 800, 500);
+-        stage.setTitle("Hello!");
++        stage.setTitle("开票助手");
+         stage.setScene(scene);
+         stage.show();
+     }

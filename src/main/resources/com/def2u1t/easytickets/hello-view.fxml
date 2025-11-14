@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml" prefHeight="240.0" prefWidth="320.0">
+    <MenuBar>
+        <Menu text="File">
+            <MenuItem text="Open"/>
+            <MenuItem text="Save"/>
+            <MenuItem text="Exit"/>
+        </Menu>
+        <Menu text="Edit">
+            <MenuItem text="Copy"/>
+            <MenuItem text="Paste"/>
+        </Menu>
+    </MenuBar>
+
+    <VBox alignment="CENTER" spacing="10.0" AnchorPane.topAnchor="30" AnchorPane.leftAnchor="10" AnchorPane.rightAnchor="10">
+        <TextField promptText="Enter your name"/>
+        <TextField promptText="Enter your email"/>
+        <Button text="Submit"/>
+    </VBox>
+</AnchorPane>
