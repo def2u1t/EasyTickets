@@ -80,7 +80,7 @@ public class ItemDAO {
     // 根据开票 id 获取回款记录
     public List<PaymentRecord> getPaymentsByInvoiceId(int invoiceId) throws SQLException {
         List<PaymentRecord> payments = new ArrayList<>();
-        String sql = "SELECT payment_date, customer_name, contract_no, amount, remark FROM payment WHERE invoice_id=?";
+        String sql = "SELECT payment_date, customer_name, contract_no, amount, remark FROM payment_record WHERE invoice_id=?";
         PreparedStatement ps = connection.prepareStatement(sql);
         ps.setInt(1, invoiceId);
         ResultSet rs = ps.executeQuery();
