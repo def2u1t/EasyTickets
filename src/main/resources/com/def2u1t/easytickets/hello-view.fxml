@@ -18,8 +18,10 @@
 <AnchorPane prefHeight="800" prefWidth="1280" style="-fx-background-color: #f5f6f7;"
             xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.def2u1t.easytickets.HelloController">
+    <TableView fx:id="table" >
 
-    <VBox prefWidth="260"
+    </TableView>
+    <VBox prefWidth="260" fx:id="tables"
           style="-fx-background-color: #ffffff; -fx-border-width: 0 1 0 0; -fx-border-color: #c0c0c0;"
           AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0">
         <padding><Insets bottom="16" left="16" right="16" top="16"/></padding>
@@ -102,7 +104,7 @@
 
                     <!-- 底部按钮 -->
                     <HBox alignment="CENTER" spacing="20">
-                        <Button text="添加记录"  style="-fx-background-color: #1a73e8; -fx-text-fill: white; -fx-background-radius:6; -fx-padding:6 20; -fx-cursor: hand;"/>
+                        <Button text="添加记录" onAction="#onAdd" style="-fx-background-color: #1a73e8; -fx-text-fill: white; -fx-background-radius:6; -fx-padding:6 20; -fx-cursor: hand;"/>
                         <Button text="添加回款"  style="-fx-background-color: #1a73e8; -fx-text-fill: white; -fx-background-radius:6; -fx-padding:6 20; -fx-cursor: hand;"/>
                         <Button text="修改记录"  style="-fx-background-color: #1a73e8; -fx-text-fill: white; -fx-background-radius:6; -fx-padding:6 20; -fx-cursor: hand;"/>
                         <Button text="删除记录"  style="-fx-background-color: #1a73e8; -fx-text-fill: white; -fx-background-radius:6; -fx-padding:6 20; -fx-cursor: hand;"/>

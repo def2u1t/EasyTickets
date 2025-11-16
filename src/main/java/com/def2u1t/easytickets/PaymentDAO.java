@@ -5,30 +5,37 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PaymentDAO {
-    private final Connection conn;
 
-    public PaymentDAO(String dbPath) throws SQLException {
-        conn = DriverManager.getConnection("jdbc:sqlite:" + dbPath);
+    /* 仅保存路径，不维持连接 */
+    private final String dbPath;
+    public PaymentDAO()               { this(null); }
+    public PaymentDAO(String dbPath)  { this.dbPath = dbPath == null ? "" : dbPath; }
+
+    /* 工具：拿连接 */
+    private Connection getConn() throws SQLException {
+        return dbPath.isEmpty() ? DBUtil.getConnection()
+                : DriverManager.getConnection("jdbc:sqlite:" + dbPath);
     }
 
     /** 某发票的全部回款，按日期倒序 */
     public List<PaymentRecord> getPaymentsByInvoiceId(int invoiceId) throws SQLException {
-        // 假设你另有一列 invoice_id 用于关联，如果当前表没有请先 ALTER TABLE 加上
         String sql = "SELECT payment_date, customer_name, contract_no, amount, purpose " +
                 "FROM payment_records " +
                 "WHERE invoice_id = ? " +
                 "ORDER BY payment_date DESC";
         List<PaymentRecord> list = new ArrayList<>();
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection c = getConn();
+             PreparedStatement ps = c.prepareStatement(sql)) {
             ps.setInt(1, invoiceId);
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                list.add(new PaymentRecord(
-                        rs.getString("payment_date"),
-                        rs.getString("customer_name"),
-                        rs.getString("contract_no"),
-                        rs.getDouble("amount"),
-                        rs.getString("purpose")));
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    list.add(new PaymentRecord(
+                            rs.getString("payment_date"),
+                            rs.getString("customer_name"),
+                            rs.getString("contract_no"),
+                            rs.getDouble("amount"),
+                            rs.getString("purpose")));
+                }
             }
         }
         return list;
@@ -37,10 +44,12 @@ public class PaymentDAO {
     /** 最近一笔回款日期 */
     public String getLatestPaymentDate(int invoiceId) throws SQLException {
         String sql = "SELECT MAX(payment_date) FROM payment_records WHERE invoice_id = ?";
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection c = getConn();
+             PreparedStatement ps = c.prepareStatement(sql)) {
             ps.setInt(1, invoiceId);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) return rs.getString(1);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) return rs.getString(1);
+            }
         }
         return null;
     }
@@ -48,10 +57,12 @@ public class PaymentDAO {
     /** 已回款总和 */
     public double getPaidTotal(int invoiceId) throws SQLException {
         String sql = "SELECT COALESCE(SUM(amount),0) FROM payment_records WHERE invoice_id = ?";
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection c = getConn();
+             PreparedStatement ps = c.prepareStatement(sql)) {
             ps.setInt(1, invoiceId);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) return rs.getDouble(1);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) return rs.getDouble(1);
+            }
         }
         return 0.0;
     }
@@ -60,7 +71,8 @@ public class PaymentDAO {
     public void insertPayment(int invoiceId, PaymentRecord p) throws SQLException {
         String sql = "INSERT INTO payment_records(payment_date, customer_name, contract_no, amount, purpose, invoice_id) " +
                 "VALUES (?,?,?,?,?,?)";
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection c = getConn();
+             PreparedStatement ps = c.prepareStatement(sql)) {
             ps.setString(1, p.getPaymentDate());
             ps.setString(2, p.getCustomerName());
             ps.setString(3, p.getContractNo());
@@ -71,7 +83,8 @@ public class PaymentDAO {
         }
     }
 
+    /** 关闭资源——不再持有连接，可空实现或直接删除 */
     public void close() throws SQLException {
-        conn.close();
+        // 无长期连接，无需处理
     }
 }
